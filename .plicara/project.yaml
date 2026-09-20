@@ -1,0 +1,12 @@
+schema_version: 1
+id: plicara-project-template
+name: "Plicara project template"
+description: "Repository starter, metadata validator, and explicit project initialization."
+kind: operations
+status: active
+repository: https://github.com/plicara/project-template
+python:
+  - .
+artifacts:
+  - kind: reference
+    path: docs/contract.md
