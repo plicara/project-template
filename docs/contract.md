@@ -4,7 +4,7 @@ Each maintained repository owns its instructions, code, evidence, and metadata. 
 
 ## Files
 
-Every repository has `README.md`, `AGENTS.md`, `.agents/skills/README.md`, `.plicara/project.yaml`, `.plicara/README.md`, `.plicara/check.py`, and a Makefile with `setup` and `check` targets. The public README explains usage; the lab README links research context and evidence without copying it. Significant decisions are dated, append-only records under `.plicara/decisions/`; notes are optional and explicitly exploratory.
+Every repository has `README.md`, `AGENTS.md`, `.agents/skills/README.md`, `.plicara/project.yaml`, `.plicara/README.md`, `.plicara/check.py`, and a Makefile with `setup` and `check` targets. These exist once, at the repository root: a repository that holds several projects or articles describes them in its README and keeps any per-project rule in the root `AGENTS.md`. The validator rejects `.plicara/`, `.agents/` or `AGENTS.md` anywhere below the root, outside declared `vendored` directories. The public README explains usage; the lab README links research context and evidence without copying it. Significant decisions are dated, append-only records under `.plicara/decisions/`; notes are optional and explicitly exploratory.
 
 The validator is a versioned, vendored copy of this template's `.plicara/check.py`. This lets an isolated checkout validate itself. Its script dependencies are exactly pinned. Change the canonical script here, test it, and explicitly copy that version into repositories adopting the change. Existing projects do not require routine template synchronization.
 
@@ -19,7 +19,7 @@ Required fields are `schema_version: 1`, a stable kebab-case `id`, `name`, a one
 - `readme` optionally identifies an existing project README at another relative path. Preserve an ongoing documentation reorganization rather than creating a competing README.
 - `artifacts` is a list of `{kind, path}` or `{kind, url}` mappings. Paths are relative to the project and must exist; URLs use HTTPS. No automatic network check is implied.
 - `related` is a list of `{id, relationship}` mappings. A published snapshot has its own ID and relates to its source with `published-snapshot-of`.
-- `projects` lists explicit child project directories in a collection. Children have their own metadata, READMEs, AGENTS.md, and skills folder. They inherit repository tooling; do not duplicate the validator. Vendored dependencies, run folders, and archived interiors are not automatically projects.
+- `vendored` lists directories holding third-party code, relative to this project. Files inside them, such as an upstream `AGENTS.md`, are not lab metadata.
 - `python` lists independently managed Python environment directories, relative to this project. Each has `pyproject.toml`, `uv.lock`, and `.python-version`. Declare an environment once, at its owning project.
 
 Do not store package versions, test counts, CI state, Git synchronization, file lists, or maintenance timestamps in metadata. Those already have authoritative sources. Published is an artifact property rather than a lifecycle status.
