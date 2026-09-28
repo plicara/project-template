@@ -81,16 +81,29 @@ class ContractTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "escapes"):
             contract.validate(self.root)
 
-    def test_explicit_children_and_duplicate_ids(self):
-        child = self.root / "child"
-        scaffold.create(child, "child", "Child", "A child.", "study", "docs")
+    def test_child_project_list_is_retired(self):
         self.write(kind="collection", projects=["child"])
-        self.assertEqual(len(contract.validate(self.root)), 2)
-        data = contract.read_metadata(child)
-        data["id"] = "example"
-        (child / ".plicara/project.yaml").write_text(yaml.safe_dump(data))
-        with self.assertRaisesRegex(ValueError, "duplicate project"):
+        with self.assertRaisesRegex(ValueError, "projects is retired"):
             contract.validate(self.root)
+
+    def test_nested_lab_metadata_fails(self):
+        for nested in ("child/AGENTS.md", "child/.plicara/project.yaml", "child/.agents/skills/README.md"):
+            path = self.root / nested
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text("copy\n")
+            with self.assertRaisesRegex(ValueError, "only at the repository root: child/"):
+                contract.validate(self.root)
+            path.unlink()
+        contract.validate(self.root)
+
+    def test_vendored_directories_are_exempt(self):
+        upstream = self.root / "third_party/upstream"
+        upstream.mkdir(parents=True)
+        (upstream / "AGENTS.md").write_text("Upstream's own rules.\n")
+        with self.assertRaisesRegex(ValueError, "third_party/upstream/AGENTS.md"):
+            contract.validate(self.root)
+        self.write(vendored=["third_party/upstream"])
+        contract.validate(self.root)
 
     def test_paused_requires_reason_and_resume_condition(self):
         self.write(status="paused", reason="Waiting for data")
