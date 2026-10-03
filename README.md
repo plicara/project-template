@@ -17,3 +17,17 @@ Profiles are `python`, `node`, and `docs`. For Node, run `npm install --package-
 For a clean repository created with GitHub's template button, run `uv run --script tools/new_project.py . --in-place --id my-study --name 'My study' --description 'The question this study investigates.' --profile python`, then `uv lock`, `make setup`, and `make check`. Initialization replaces the template identity and removes the starter's own tools/tests; it refuses an already initialized or dirty checkout. Template updates do not overwrite consuming projects.
 
 The shared validator lives in [.plicara/check.py](.plicara/check.py). It is vendored into each repository so checks do not depend on another checkout or the lab index. New project files and tooling are Apache-2.0; choose the appropriate project license before publishing.
+
+## Claude Code settings
+
+New repos inherit `.claude/settings.json`.
+
+Keys in the file:
+
+- `attribution` has `commit` and `pr` emptied and `sessionUrl` set to false, so Claude Code adds no commit trailer, pull request footer, or session link going forward.
+- `permissions.deny` blocks `Bash(git push --force*)` and `Read(.env*)`.
+- `env.CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` is set to `80`, so conversations compact at 80% of the context window.
+
+Changes are merged into an existing file, never overwritten.
+
+Set 2026-10-03 by Adrian.
