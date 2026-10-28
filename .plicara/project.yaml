@@ -3,7 +3,7 @@ id: plicara-project-template
 name: "Plicara project template"
 description: "Repository starter, metadata validator, and explicit project initialization."
 kind: operations
-status: active
+status: maintained
 repository: https://github.com/plicara/project-template
 python:
   - .
